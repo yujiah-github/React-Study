@@ -157,6 +157,131 @@ function App(){
 };
 
 export default App;
+```
 
+### useCallback
+- useCallback은 useMemo와 비슷하다.
+- 랜더링된 성능을 최적화 해야할 때 사용한다.
+
+```javascript
+import {useState, useEffect, useCallback} from 'react';
+
+const getAverage = numbers => {
+    console.log('평균값 계산 중');
+    if (numbers.length == 0) return 0;
+    const sum = numbers.reduce((a,b) => a + b);
+    return sum / numbers.length;
+};
+
+const Average = () => {
+    const [list, setList] = useState([]);
+    const [number, setNumber] = useState('');
+
+    const onChange = useCallback(event => {
+        setNumber(event.target.value);
+    },[]);
+
+    const onInsert = useCallback(() => {
+        const nextList = list.concat(parseInt(number));
+        setList(nextList);
+        setNumber('');
+    },[number, list]);
+
+    const avg = useMemo(() => getAverage(list), [list]);
+
+    return(
+        <div>
+            <input value={value} onChange={onChange} />
+            <button onClick={onInsert}>등록</button>
+            <ul>
+                {list.map((value, index) => (
+                    <li key={index}>{value}</li>
+                ))}
+            </ul>
+            <div>
+                <b>평균값: </b> {arg}
+            </div>
+        </div>
+    );
+};
+
+export default Average;
+```
+
+### useRef
+- useRef hook은 함수 컴포넌트에서 ref를 쉽게 사용할 수 있게 해준다.
+
+```javascript
+import {useState, useEffect, useCallback} from 'react';
+
+const getAverage = numbers => {
+    console.log('평균값 계산 중');
+    if (numbers.length == 0) return 0;
+    const sum = numbers.reduce((a,b) => a + b);
+    return sum / numbers.length;
+};
+
+const Average = () => {
+    const [list, setList] = useState([]);
+    const [number, setNumber] = useState('');
+    const inputEl = useRef(null);
+
+    const onChange = useCallback(event => {
+        setNumber(event.target.value);
+    },[]);
+
+    const onInsert = useCallback(() => {
+        const nextList = list.concat(parseInt(number));
+        setList(nextList);
+        setNumber('');
+        inputEl.current.focus();
+    },[number, list]);
+
+    const avg = useMemo(() => getAverage(list), [list]);
+
+    return(
+        <div>
+            <input value={value} onChange={onChange} ref={inputEl}/>
+            <button onClick={onInsert}>등록</button>
+            <ul>
+                {list.map((value, index) => (
+                    <li key={index}>{value}</li>
+                ))}
+            </ul>
+            <div>
+                <b>평균값: </b> {arg}
+            </div>
+        </div>
+    );
+};
+
+export default Average;
+```
+
+#### 로컬 변수 사용하기
+- 로컬 변수란 렌더링과 상관없이 바뀔 수 있는 값을 의미한다.
+- 로컬 변수를 사용해야할 때도 useRef를 활용할 수 있다.
+
+```javascript
+import React, {useRef} from 'react';
+
+const RefSample = () => {
+    const id = useRef(1);
+    const setId = (n) => {
+        id.current = n;
+    }
+
+    const printId = () => {
+        console.log(id.current);
+    }
+
+    return(
+        <div>
+            refSample
+        </div>
+    );
+};
+
+export default RefSample;
 
 ```
